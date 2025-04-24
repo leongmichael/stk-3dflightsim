@@ -38,7 +38,7 @@ end
 lines{end+1} = "END Ephemeris";
 
 % Write to .e file
-fid = fopen('missile_trajectory_with_vel.e', 'w');
+fid = fopen('missile_trajectory.e', 'w');
 for i = 1:length(lines)
     fprintf(fid, '%s\n', lines{i});
 end
