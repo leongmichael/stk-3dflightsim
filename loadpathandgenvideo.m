@@ -31,22 +31,32 @@ traj = missile.Trajectory;  % This is now IAgVePropagatorStkExternal
 traj.Filename = ephemPath;
 traj.Propagate;
 
+% TODO: SET VIEW TO ROCKET/MISSILE
 
-% % === Adjust 3D View ===
-% fprintf('Setting 3D view...\n');
-% root.ExecuteCommand('VO * Activate3DWindow');
-% root.ExecuteCommand('VO * ViewFromTo "Missile" "Earth"');
-% 
-% % === Start Recording ===
-% fprintf('Recording missile animation...\n');
-% videoOutput = fullfile(pwd, 'MissileFlight.mp4');
-% root.ExecuteCommand(sprintf('VO * Movie Start Type "mp4" Filename "%s" WindowID 1 Quality High Size 1920 1080', videoOutput));
-% 
-% % === Animate ===
-% root.ExecuteCommand('Animate * Reset');
-% root.ExecuteCommand('Animate * Start');
-% pause(1.1 * (t(end) - t(1)));  % crude wait
-% 
-% % === Stop Recording ===
-% root.ExecuteCommand('VO * Movie Stop');
-% fprintf('✅ Missile video saved to: %s\n', videoOutput);
+% === Configure High-Res MP4 Recording ===
+fprintf('Setting up video recording...\n');
+videoDir = fullfile(pwd);  % Save in current directory
+root.ExecuteCommand('RecordMovie3D * Record Off');
+root.ExecuteCommand(['RecordMovie3D * FileFormat H264 ', ...
+                     'OutputDir "', videoDir, '" Prefix MissileFlight']);
+% Optional visual enhancements (commented out):
+% root.ExecuteCommand('RecordMovie3D * AntiAlias 2');
+
+% === Animate and Record ===
+fprintf('Recording animation...\n');
+root.ExecuteCommand('Animate * Reset');
+root.ExecuteCommand('RecordMovie3D * Record On');
+root.ExecuteCommand('Animate * Start');
+
+% % === Wait Until Scenario End ===
+% stopTimeNum = datenum(scenario.StopTime); 
+% while datenum(root.CurrentTime) < stopTimeNum
+%     pause(0.5);
+% end
+
+pause(10);  % Wait 10 seconds while animation plays and video records
+
+
+% === Stop Recording ===
+root.ExecuteCommand('RecordMovie3D * Record Off');
+fprintf('✅ Video recording complete. Check output in:\n%s\n', videoDir);
