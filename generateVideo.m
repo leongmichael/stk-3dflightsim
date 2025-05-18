@@ -1,22 +1,22 @@
-% === Launch STK ===
+% === launch STK ===
 fprintf('Launching STK...\n');
 app = actxserver('STK12.Application');
 app.Visible = 1;
 root = app.Personality2;
 
-% === Create New Scenario ===
+% === create new scenario ===
 fprintf('Creating new scenario...\n');
 root.NewScenario('MissileTrajectoryScenario');
 scenario = root.CurrentScenario;
 
-% Set scenario time
+% set scenario time
 startTime = '23 Apr 2025 19:00:00.000';
 stopTime  = '23 Apr 2025 19:20:00.000';
 scenario.SetTimePeriod(startTime, stopTime);
 scenario.StartTime = startTime;
 scenario.StopTime = stopTime;
 
-% === Create Missile Object ===
+% === create missile object ===
 fprintf('Creating missile object...\n');
 missile = scenario.Children.New('eMissile', 'Missile');
 
@@ -31,7 +31,7 @@ traj = missile.Trajectory;  % This is now IAgVePropagatorStkExternal
 traj.Filename = ephemPath;
 traj.Propagate;
 
-% SET VIEW TO ROCKET/MISSILE
+% set view to rocket
 
 fprintf('Setting camera to view missile using Object Model...\n');
 
@@ -58,7 +58,7 @@ camera.LockViewDirection = false;
 sceneManager.Render;
 
 
-% === Configure High-Res MP4 Recording ===
+% === configure recording ===
 fprintf('Setting up video recording...\n');
 videoDir = fullfile(pwd);  % Save in current directory
 root.ExecuteCommand('RecordMovie3D * Record Off');
@@ -68,21 +68,16 @@ root.ExecuteCommand(['RecordMovie3D * FileFormat H264 ', ...
 % root.ExecuteCommand('RecordMovie3D * AntiAlias 2');
 
 
-% === Animate and Record ===
+% === record animation ===
 fprintf('Recording animation...\n');
 root.ExecuteCommand('Animate * Reset');
 root.ExecuteCommand('RecordMovie3D * Record On');
 root.ExecuteCommand('Animate * Start');
 
-% % === Wait Until Scenario End ===
-% stopTimeNum = datenum(scenario.StopTime); 
-% while datenum(root.CurrentTime) < stopTimeNum
-%     pause(0.5);
-% end
 
 pause(10);  % Wait 10 seconds while animation plays and video records
 
 
-% === Stop Recording ===
+% === stop recording ===
 root.ExecuteCommand('RecordMovie3D * Record Off');
 fprintf('✅ Video recording complete. Check output in:\n%s\n', videoDir);
