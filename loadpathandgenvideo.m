@@ -31,7 +31,32 @@ traj = missile.Trajectory;  % This is now IAgVePropagatorStkExternal
 traj.Filename = ephemPath;
 traj.Propagate;
 
-% TODO: SET VIEW TO ROCKET/MISSILE
+% SET VIEW TO ROCKET/MISSILE
+
+fprintf('Setting camera to view missile using Object Model...\n');
+
+% Get scene and camera
+sceneManager = scenario.SceneManager;
+scene = sceneManager.Scenes.Item(0);  % First 3D Graphics window
+camera = scene.Camera;
+
+% Get missile position point and axes
+missileVGT = missile.Vgt;
+missilePoint = missileVGT.Points.Item('Center');
+missileAxes = missileVGT.Axes.Item('Body');
+
+% Offset vector: {X; Y; Z} in km (view from behind and above)
+offset = {-10; 0; 5};  % 10 km behind, 5 km above
+upDirection = {0; 0; 1};  % Z-up
+
+% Set camera relative to missile
+camera.ViewOffsetWithUpAxis(missileAxes, missilePoint, offset, upDirection);
+camera.ConstrainedUpAxis = 'eStkGraphicsConstrainedUpAxisZ';
+camera.FieldOfView = 60;
+camera.LockViewDirection = false;
+
+sceneManager.Render;
+
 
 % === Configure High-Res MP4 Recording ===
 fprintf('Setting up video recording...\n');
@@ -41,6 +66,7 @@ root.ExecuteCommand(['RecordMovie3D * FileFormat H264 ', ...
                      'OutputDir "', videoDir, '" Prefix MissileFlight']);
 % Optional visual enhancements (commented out):
 % root.ExecuteCommand('RecordMovie3D * AntiAlias 2');
+
 
 % === Animate and Record ===
 fprintf('Recording animation...\n');
