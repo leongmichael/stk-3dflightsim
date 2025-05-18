@@ -1,4 +1,6 @@
 % load excel data
+
+% adjust filename as needed
 filename = 'SampleOutput.xlsx';
 fprintf('Reading Excel data from %s...\n', filename);
 data = readtable(filename, 'VariableNamingRule', 'preserve');
