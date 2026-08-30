@@ -1,53 +1,69 @@
-# Flight Simulation in STK
+# 3D Flight Trajectory in STK
 
-## Summary
-Simulate flight trajectories in 3D through AGI STK. 
+Convert Excel flight data into an STK ephemeris file, animate the trajectory in AGI STK 12, and record a 3D preview video.
 
-
----
+![STK missile trajectory preview](docs/preview.gif)
 
 ## Requirements
-- MATLAB (with COM Automation Server enabled)
-- AGI STK 12 or later
-- Excel file with flight data
-- Provided scripts:
-  - `pathToEphemeris.m`
-  - `generateVideo.m`
-  - `SampleOutput.xlsx` (example data)
 
----
+- **MATLAB** with COM automation enabled
+- **AGI STK 12** (or later) with the MATLAB integration / COM interface
+- Flight data in the Excel format described below
 
-## Setup
+## Quick start
 
-### 1. Flight Data
+1. Open this folder in MATLAB (or `cd` into it).
+2. Generate the ephemeris from the included sample data:
+   ```matlab
+   generate_ephemeris
+   ```
+3. Record the STK animation (launches STK if it is not already running):
+   ```matlab
+   generate_video
+   ```
 
-Ensure your Excel file is formatted with the following columns:
+STK writes an H.264 `.mp4` to the current directory using the prefix in `config.m` (default: `missile_flight`).
 
-> time (s), lat, long, alt (ft), ecef x (ft), ecef y (ft), ecef z (ft), vx, vy, vz
+## Excel format
 
+Your spreadsheet must include these columns (see `sample_flight.xlsx`):
 
-Use `SampleOutput.xlsx` as a reference for the expected format.
+| Column | Description |
+|--------|-------------|
+| `time (s)` | Time since scenario epoch |
+| `lat`, `long`, `alt (ft)` | Geodetic position (reference only) |
+| `ecef x (ft)`, `ecef y (ft)`, `ecef z (ft)` | ECEF position in feet |
+| `vx`, `vy`, `vz` | ECEF velocity in m/s |
 
----
+Positions are converted from feet to meters when writing the ephemeris. Lat/long/alt and any acceleration columns are ignored.
 
-### 2. Generate Ephemeris File
+## Configuration
 
-- Open `pathToEphemeris.m`.
-- Set the file path to your Excel file inside the script.
-- Run the script to generate a `.e` ephemeris file (plain text format).
+Edit `config.m` to change:
 
-This file defines the trajectory for STK to simulate.
+- Input Excel file and output ephemeris path
+- Scenario epoch and duration (UTC)
+- STK scenario / vehicle names
+- Camera offset and field of view
+- Recording duration and output video prefix
 
----
+## Project layout
 
-### 3. Simulate and Record in STK
+```
+config.m                Shared settings
+generate_ephemeris.m    Excel → STK .e ephemeris
+generate_video.m        Load ephemeris into STK and record video
+sample_flight.xlsx      Example trajectory (~63 s, 90k points)
+sample_trajectory.e     Pre-built ephemeris from the sample data
+docs/preview.gif        Sample STK output (from included recording)
+```
 
-- Run `generateVideo.m` in MATLAB.
-- This script will:
-  - Launch STK and create a new scenario
-  - Load the ephemeris file
-  - Set the camera view and animation parameters
-  - Animate the trajectory
-  - Record and export a video of the simulation
+## Notes
 
----
+- `sample_trajectory.e` is checked in so you can run `generate_video` without regenerating the ephemeris.
+- Generated `.mp4` files are gitignored; commit a GIF under `docs/` if you want a README preview.
+- STK must be licensed and installed locally; this repo does not bundle STK.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

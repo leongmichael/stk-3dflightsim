@@ -1,0 +1,11 @@
+# MATLAB editor backups
+*.asv
+*.m~
+
+# OS
+.DS_Store
+
+# STK / generated recordings (keep preview.gif in the repo)
+*.mp4
+*.avi
+*.wmv
