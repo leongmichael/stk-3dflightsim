@@ -7,8 +7,8 @@ function cfg = config
 %   in sync.
 
     % --- Input / output files (relative to the current working directory)
-    cfg.excel_file     = 'sample_flight.xlsx';
-    cfg.ephemeris_file = 'sample_trajectory.e';
+    cfg.excel_file     = fullfile('sample_data', 'sample_flight.xlsx');
+    cfg.ephemeris_file = fullfile('sample_data', 'sample_trajectory.e');
     cfg.video_prefix   = 'missile_flight';
 
     % --- Scenario time (UTC). Duration must cover the trajectory.

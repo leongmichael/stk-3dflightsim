@@ -26,7 +26,7 @@ STK writes an H.264 `.mp4` to the current directory using the prefix in `config.
 
 ## Excel format
 
-Your spreadsheet must include these columns (see `sample_flight.xlsx`):
+Your spreadsheet must include these columns (see `sample_data/sample_flight.xlsx`):
 
 | Column | Description |
 |--------|-------------|
@@ -50,18 +50,17 @@ Edit `config.m` to change:
 ## Project layout
 
 ```
-config.m                Shared settings
-generate_ephemeris.m    Excel → STK .e ephemeris
-generate_video.m        Load ephemeris into STK and record video
-sample_flight.xlsx      Example trajectory (~63 s, 90k points)
-sample_trajectory.e     Pre-built ephemeris from the sample data
-docs/preview.gif        Sample STK output (from included recording)
+config.m                      Shared settings
+generate_ephemeris.m          Excel → STK .e ephemeris
+generate_video.m              Load ephemeris into STK and record video
+sample_data/
+  sample_flight.xlsx          Example trajectory (~63 s, 90k points)
+  sample_trajectory.e         Pre-built ephemeris from the sample data
 ```
 
 ## Notes
 
-- `sample_trajectory.e` is checked in so you can run `generate_video` without regenerating the ephemeris.
-- Generated `.mp4` files are gitignored; commit a GIF under `docs/` if you want a README preview.
+- `sample_data/sample_trajectory.e` is included so you can run `generate_video` without regenerating the ephemeris.
 - STK must be licensed and installed locally; this repo does not bundle STK.
 
 ## License
